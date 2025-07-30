@@ -19,7 +19,7 @@
 ### 🧩 Frontend
 - **HTML5** – Semantic structure
 - **CSS3** – Custom styling using Flexbox & Grid
-- **JavaScript (ES6+)** – Interactivity and DOM manipulation
+- **TypeScript (ES6+)** – Interactivity and DOM manipulation
 - **GSAP (GreenSock Animation Platform)** – Smooth, high-performance animations
 - **ScrollTrigger (GSAP Plugin)** – Scroll-based animations
 
