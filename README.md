@@ -1,46 +1,42 @@
 # 🌟 Kalaa – Empowering Youth Through Skills & Livelihood
 
-**Kalaa** is a startup focused on reducing unemployment by training youth in high-demand technical skills and connecting them with local businesses for hands-on job opportunities. 
+**Kalaa** is a startup committed to reducing unemployment by providing practical, technical training to the youth and connecting them with real-world opportunities. This website serves as the digital face of the initiative — informative, engaging, and designed for action.
+
+🟢 **Live Site**: [https://kalaa-website.vercel.app](https://kalaa-website.vercel.app)
 
 ---
 
-## 🖥️ Website Features
+## 📌 Features
 
-- Clean, modern UI with smooth animations
-- Fully responsive design for desktop, tablet, and mobile
-- Dynamic course and milestone sections
-- Partner/trainee forms with validation
-- SEO-friendly and optimized for fast performance
+- ✨ **Modern, Clean UI** – Designed with a minimal yet energetic aesthetic  
+- 📱 **Fully Responsive** – Works beautifully across mobile, tablet, and desktop  
+- 🌀 **Smooth Animations** – Scroll-based effects and entrance animations using GSAP & AOS  
+- 📜 **Timeline of Milestones** – Highlights Kalaa’s journey from Dec 2024 to present  
+- 📂 **Training Overview** – Showcases courses offered and business model  
+- 📮 **Forms (Static for Now)** – For future trainee and partner registrations  
+- 📎 **SEO-Ready Layout** – Structured HTML for discoverability (meta tags recommended)
 
 ---
 
-## ⚙️ Tech Stack Used
+## ⚙️ Tech Stack
 
 ### 🧩 Frontend
-- **HTML5** – Semantic structure
-- **CSS3** – Custom styling using Flexbox & Grid
-- **TypeScript (ES6+)** – Interactivity and DOM manipulation
-- **GSAP (GreenSock Animation Platform)** – Smooth, high-performance animations
-- **ScrollTrigger (GSAP Plugin)** – Scroll-based animations
+- **HTML5** – Semantic, accessible structure
+- **CSS3** – Custom styles with Flexbox, Grid, and responsive queries
+- **TypeScript** – Handles animations and interactivity
+- **GSAP (GreenSock)** – Used for hero text animations and section entrances
+- **AOS (Animate On Scroll)** – Lightweight library for scroll-triggered effects
 
-### 🎨 Design Tools
-- **Figma** – UI/UX prototyping and wireframes
-- **Google Fonts** – Custom font integration
-- **Gradient Generator** – Used for the text gradient effects
+### 🎨 UI & Design
+- **Figma** – Wireframing and visual planning
+- **Google Fonts** – Custom typography
+- **Font Awesome** – For scalable vector icons
+- **Gradient Effects** – For modern, branded text and buttons
 
-
-### 📦 Version Control & Deployment
-- **Git + GitHub** – Source control and collaboration
-- **GitHub Pages** – Deployed live website
-
----
+### ☁️ Deployment
+- **GitHub** – Version control and collaboration
+- **Vercel** – Live deployment and hosting
 
 ---
 
-## 📁 Local Setup
 
-Clone the repo and open the project:
-
-```bash
-git clone https://github.com/your-username/kalaa-website.git
-cd kalaa-website
