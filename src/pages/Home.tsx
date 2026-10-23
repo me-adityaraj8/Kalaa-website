@@ -10,7 +10,7 @@ import ShopBoard from '../components/ShopBoard';
 import { COURSES } from '../data/courses';
 import { CONTACT, COURSE_FEE, FUNDING, MOTTO, STEPS, TEAM } from '../data/site';
 import { callLink, whatsappLink } from '../lib/contact';
-import { useLang, type L } from '../lib/i18n';
+import { numeral, useLang, type L } from '../lib/i18n';
 
 export default function Home() {
   return (
@@ -34,9 +34,11 @@ function Hero() {
     <section className="bricks overflow-hidden border-b-[3px] border-ink">
       <div className="mx-auto grid max-w-6xl gap-12 px-4 pb-14 pt-10 md:pt-14 lg:grid-cols-[1.1fr_1fr] lg:items-center">
         <div>
-          <p className="kicker text-xl" lang={lang === 'hi' ? 'en' : 'hi'}>
-            {lang === 'hi' ? 'Learn a trade. Start earning.' : 'हुनर सीखो, कमाई शुरू करो।'}
-          </p>
+          {lang === 'hi' && (
+            <p className="kicker text-xl" lang="en">
+              Learn a trade. Start earning.
+            </p>
+          )}
           <motion.h1
             className="mt-2 font-display text-[3.5rem] font-bold leading-[0.98] sm:text-7xl lg:text-[5.25rem]"
             initial={{ opacity: 0, y: 20 }}
@@ -156,8 +158,7 @@ function Trades() {
 }
 
 function HowItWorks() {
-  const { t } = useLang();
-  const numerals = ['१', '२', '३'];
+  const { t, lang } = useLang();
   return (
     <section className="border-y-[3px] border-ink bg-ink text-white">
       <div className="mx-auto max-w-6xl px-4 py-16 md:py-20">
@@ -170,8 +171,8 @@ function HowItWorks() {
           {STEPS.map((step, i) => (
             <Reveal key={step.title.en} delay={i * 0.1}>
               <li className="h-full rounded-lg border-[3px] border-white/20 p-6">
-                <span lang="hi" className="paint block font-body text-7xl font-extrabold leading-none text-haldi">
-                  {numerals[i]}
+                <span className="paint block font-body text-7xl font-extrabold leading-none text-haldi">
+                  {numeral(lang, i)}
                 </span>
                 <h3 className="mt-4 font-display text-3xl font-semibold">{t(step.title)}</h3>
                 <p className="mt-2 text-lg leading-relaxed text-white/80">{t(step.body)}</p>
@@ -234,7 +235,7 @@ function SaathiShowcase() {
         <div className="overflow-hidden rounded-xl border-[3px] border-ink bg-[#0B1C19] text-white shadow-board-lg">
           <div className="grid lg:grid-cols-[1fr_1.1fr]">
             <div className="p-7 md:p-10">
-              <p className="tubelight animate-flicker font-display text-5xl font-bold md:text-6xl">Kalaa साथी</p>
+              <p className="tubelight animate-flicker font-display text-5xl font-bold md:text-6xl">{t({ hi: 'Kalaa साथी', en: 'Kalaa Saathi' })}</p>
               <p className="mt-1 font-display text-xl font-semibold text-neon-glow/80">
                 {t({ hi: 'आपका AI गाइड, आपकी भाषा में', en: 'Your AI guide, in your language' })}
               </p>

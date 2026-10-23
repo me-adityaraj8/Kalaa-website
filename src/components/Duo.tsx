@@ -12,12 +12,19 @@ type Props = {
 };
 
 /**
- * A heading in both languages, the way Bihar's shop boards are painted:
- * the reader's language big, the other one small alongside it.
+ * A heading. On the Hindi site it carries a small English line as well, the
+ * way Bihar's shop boards are painted; the English site stays English.
  */
 export default function Duo({ text, as: Tag = 'h2', className, subClassName = 'kicker', subBelow }: Props) {
   const { lang } = useLang();
   const other = otherLang(lang);
+  if (lang === 'en') {
+    return (
+      <Tag className={className}>
+        <span className="block">{text.en}</span>
+      </Tag>
+    );
+  }
   const sub = (
     <span lang={langAttr(other)} className={`block ${subClassName}`}>
       {text[other]}

@@ -1,4 +1,4 @@
-import { FALLBACK_BETA, MODEL, badRequest, getClient, isLimited, json, logError, offline, readJson, textOf, tooMany } from '../server/ai.js';
+import { MODEL, badRequest, getClient, isLimited, json, logError, offline, parseJsonReply, readJson, tooMany } from '../server/ai.js';
 import { KNOWLEDGE } from '../server/knowledge.js';
 import { COURSE_SLUGS } from '../src/data/courses.js';
 import type { Lang } from '../src/data/types.js';
@@ -89,20 +89,14 @@ export async function POST(request: Request): Promise<Response> {
   if (isLimited(request, 'diagnose', 8)) return tooMany();
 
   try {
-    const message = await client.beta.messages.create({
+    const response = await client.models.generateContent({
       model: MODEL,
-      max_tokens: 6000,
-      betas: [FALLBACK_BETA],
-      fallbacks: 'default',
-      output_config: { effort: 'medium', format: { type: 'json_schema', schema: SCHEMA } },
-      system: [{ type: 'text', text: SYSTEM, cache_control: { type: 'ephemeral' } }],
-      messages: [
+      contents: [
         {
           role: 'user',
-          content: [
-            { type: 'image', source: { type: 'base64', media_type: body.mediaType, data: body.image } },
+          parts: [
+            { inlineData: { mimeType: body.mediaType, data: body.image } },
             {
-              type: 'text',
               text:
                 `Reply language: ${body.lang === 'hi' ? 'Hindi' : 'English'}\n` +
                 `They say this is a: ${DEVICE_NAMES[body.device]}\n` +
@@ -111,9 +105,16 @@ export async function POST(request: Request): Promise<Response> {
           ],
         },
       ],
+      config: {
+        systemInstruction: SYSTEM,
+        responseMimeType: 'application/json',
+        responseJsonSchema: SCHEMA,
+        maxOutputTokens: 4096,
+      },
     });
-    if (message.stop_reason !== 'end_turn') return json({ error: 'no_result' }, 502);
-    return json(JSON.parse(textOf(message)));
+    const result = parseJsonReply<{ is_device: boolean }>(response);
+    if (!result || typeof result.is_device !== 'boolean') return json({ error: 'no_result' }, 502);
+    return json(result);
   } catch (err) {
     logError('diagnose', err);
     return json({ error: 'no_result' }, 502);

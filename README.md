@@ -2,7 +2,7 @@
 
 Website for Kalaa, a skill-training startup in Bhagalpur, Bihar. Young people learn mobile, laptop, AC and solar repair: video lessons in Hindi, then hands-on work with a mentor at a partner shop.
 
-The site is in Hindi and English, styled after the painted shop signboards of Bihar, and has **Kalaa Saathi**, an AI guide built on Claude:
+The site is in Hindi and English, styled after the painted shop signboards of Bihar, and has **Kalaa Saathi**, an AI guide built on Gemini:
 
 - **Course finder** (`/find`): a few questions, then a course recommendation with reasons
 - **Ask Saathi**: chat panel available on every page, with voice input in Hindi and read-aloud answers
@@ -14,7 +14,7 @@ Enrolment and partner forms open WhatsApp with the message filled in. Nothing is
 
 ```bash
 npm install
-cp .env.example .env.local   # add ANTHROPIC_API_KEY to turn on Saathi
+cp .env.example .env.local   # add GEMINI_API_KEY to turn on Saathi
 npm run dev
 ```
 
@@ -22,7 +22,7 @@ Without an API key everything still works: the course finder falls back to a bui
 
 ## Deploy
 
-Vercel picks up `api/*.ts` as serverless functions. Add `ANTHROPIC_API_KEY` under Project → Settings → Environment Variables.
+Vercel picks up `api/*.ts` as serverless functions. Add `GEMINI_API_KEY` under Project → Settings → Environment Variables.
 
 ## Where things live
 
@@ -33,4 +33,4 @@ Vercel picks up `api/*.ts` as serverless functions. Add `ANTHROPIC_API_KEY` unde
 
 ## Stack
 
-Vite, React, TypeScript, Tailwind, Framer Motion, Anthropic SDK.
+Vite, React, TypeScript, Tailwind, Framer Motion, Google Gen AI SDK (Gemini).

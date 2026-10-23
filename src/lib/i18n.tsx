@@ -19,7 +19,7 @@ function initialLang(): Lang {
   } catch {
     // storage can be blocked; fall through to the default
   }
-  return 'hi';
+  return 'en';
 }
 
 export function LangProvider({ children }: { children: ReactNode }) {
@@ -50,3 +50,6 @@ export function useLang(): LangContextValue {
 
 export const otherLang = (lang: Lang): Lang => (lang === 'hi' ? 'en' : 'hi');
 export const langAttr = (lang: Lang) => (lang === 'hi' ? 'hi' : 'en');
+
+/** Step numbers: Devanagari digits in Hindi, plain digits in English. */
+export const numeral = (lang: Lang, index: number) => (lang === 'hi' ? '१२३४५६७८९'[index] : String(index + 1));

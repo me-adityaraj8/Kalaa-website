@@ -1,15 +1,14 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { FinishReason, GoogleGenAI, type GenerateContentResponse } from '@google/genai';
 
-export const MODEL = 'claude-opus-5-5';
-// Re-runs a declined request on Anthropic's recommended fallback model.
-export const FALLBACK_BETA = 'server-side-fallback-2026-07-01';
+// Fast, cheap, takes images, and is on the Gemini API free tier.
+export const MODEL = 'gemini-3.5-flash-lite';
 
-let client: Anthropic | null = null;
+let client: GoogleGenAI | null = null;
 
 /** Null when no key is configured; callers answer 503 and the UI falls back. */
-export function getClient(): Anthropic | null {
-  if (!process.env.ANTHROPIC_API_KEY) return null;
-  client ??= new Anthropic();
+export function getClient(): GoogleGenAI | null {
+  if (!process.env.GEMINI_API_KEY) return null;
+  client ??= new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
   return client;
 }
 
@@ -47,14 +46,23 @@ export async function readJson(req: Request, maxChars: number): Promise<unknown>
   }
 }
 
-export function textOf(message: Anthropic.Beta.BetaMessage): string {
-  return message.content
-    .filter((block): block is Anthropic.Beta.BetaTextBlock => block.type === 'text')
-    .map((block) => block.text)
-    .join('');
+/** True when Gemini blocked the prompt or stopped for safety rather than finishing. */
+export function wasBlocked(response: GenerateContentResponse): boolean {
+  if (response.promptFeedback?.blockReason) return true;
+  const reason = response.candidates?.[0]?.finishReason;
+  return reason !== undefined && reason !== FinishReason.STOP && reason !== FinishReason.MAX_TOKENS;
+}
+
+/** Parses a structured-output reply, or null if it didn't finish cleanly. */
+export function parseJsonReply<T>(response: GenerateContentResponse): T | null {
+  if (wasBlocked(response) || response.candidates?.[0]?.finishReason !== FinishReason.STOP) return null;
+  try {
+    return JSON.parse(response.text ?? '') as T;
+  } catch {
+    return null;
+  }
 }
 
 export function logError(where: string, err: unknown) {
-  if (err instanceof Anthropic.APIError) console.error(`[${where}] API ${err.status}: ${err.message}`);
-  else console.error(`[${where}]`, err);
+  console.error(`[${where}]`, err instanceof Error ? err.message : err);
 }

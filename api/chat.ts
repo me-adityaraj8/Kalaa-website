@@ -1,11 +1,10 @@
-import type Anthropic from '@anthropic-ai/sdk';
-import { FALLBACK_BETA, MODEL, badRequest, getClient, isLimited, logError, offline, readJson, tooMany } from '../server/ai.js';
+import { MODEL, badRequest, getClient, isLimited, logError, offline, readJson, tooMany, wasBlocked } from '../server/ai.js';
 import { KNOWLEDGE, replyLanguage } from '../server/knowledge.js';
 import { CONTACT } from '../src/data/site.js';
 import type { Lang } from '../src/data/types.js';
 
 // Tells the client to throw away what it has shown so far (the answer is being
-// replaced, e.g. after a refusal).
+// replaced, e.g. after a safety block).
 const RESET = '\u001e';
 
 const SYSTEM = `You are Kalaa Saathi, the helper on the website of Kalaa SkillTech, a skill-training startup in Bhagalpur, Bihar. You talk with young people who are thinking about learning a trade. Many are more comfortable in Hindi than English, many are on a phone, and some speak instead of typing.
@@ -27,7 +26,7 @@ Rules:
 - Simple, safe repair tips are fine. For mains electricity, AC gas, swollen or hot batteries, or rooftop work, tell them to stop and get a trained person.
 - If the chat drifts away from skills, work and Kalaa, answer briefly and kindly steer back.`;
 
-const REFUSAL: Record<Lang, string> = {
+const BLOCKED: Record<Lang, string> = {
   hi: `माफ़ करना, इसमें मैं मदद नहीं कर पाऊँगा। Kalaa के कोर्स के बारे में कुछ भी पूछो, या टीम से WhatsApp पर बात करो: ${CONTACT.phoneDisplay}`,
   en: `Sorry, I can't help with that one. Ask me anything about Kalaa's courses, or message the team on WhatsApp: ${CONTACT.phoneDisplay}`,
 };
@@ -65,45 +64,43 @@ export async function POST(request: Request): Promise<Response> {
   if (isLimited(request, 'chat', 30)) return tooMany();
 
   const { lang, messages } = body;
-  const stream = client.beta.messages.stream({
-    model: MODEL,
-    max_tokens: 4000,
-    betas: [FALLBACK_BETA],
-    fallbacks: 'default',
-    output_config: { effort: 'low' },
-    system: [
-      { type: 'text', text: SYSTEM, cache_control: { type: 'ephemeral' } },
-      { type: 'text', text: replyLanguage(lang) },
-    ],
-    messages: messages as Anthropic.Beta.BetaMessageParam[],
-  });
-
+  const abort = new AbortController();
   const encoder = new TextEncoder();
-  const body$ = new ReadableStream<Uint8Array>({
+
+  const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       const send = (text: string) => controller.enqueue(encoder.encode(text));
       try {
-        for await (const event of stream) {
-          if (event.type === 'content_block_start' && (event.content_block as { type: string }).type === 'fallback') {
-            send(RESET); // another model is taking over; drop the partial answer
-          } else if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
-            send(event.delta.text);
+        const chunks = await client.models.generateContentStream({
+          model: MODEL,
+          contents: messages.map((m) => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })),
+          config: {
+            systemInstruction: `${SYSTEM}\n\n${replyLanguage(lang)}`,
+            maxOutputTokens: 2048,
+            abortSignal: abort.signal,
+          },
+        });
+        for await (const chunk of chunks) {
+          if (wasBlocked(chunk)) {
+            send(RESET + BLOCKED[lang]);
+            break;
           }
+          if (chunk.text) send(chunk.text);
         }
-        const final = await stream.finalMessage();
-        if (final.stop_reason === 'refusal') send(RESET + REFUSAL[lang]);
       } catch (err) {
-        logError('chat', err);
-        send(RESET + FAILED[lang]);
+        if (!abort.signal.aborted) {
+          logError('chat', err);
+          send(RESET + FAILED[lang]);
+        }
       }
       controller.close();
     },
     cancel() {
-      stream.abort();
+      abort.abort();
     },
   });
 
-  return new Response(body$, {
+  return new Response(stream, {
     headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store' },
   });
 }

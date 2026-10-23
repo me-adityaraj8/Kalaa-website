@@ -5,7 +5,7 @@ import PageHeader from '../components/PageHeader';
 import Reveal from '../components/Reveal';
 import { COURSES } from '../data/courses';
 import { whatsappLink } from '../lib/contact';
-import { useLang, type L } from '../lib/i18n';
+import { numeral, useLang, type L } from '../lib/i18n';
 
 const BENEFITS: { icon: typeof Users; title: L; body: L }[] = [
   {
@@ -43,7 +43,7 @@ const BENEFITS: { icon: typeof Users; title: L; body: L }[] = [
 ];
 
 export default function Partner() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const [shop, setShop] = useState('');
   const [owner, setOwner] = useState('');
   const [phone, setPhone] = useState('');
@@ -109,7 +109,7 @@ export default function Partner() {
                 { hi: 'आपके हिसाब से ट्रेनी आपके पास भेजे जाएँगे।', en: 'Trainees are matched to your shop at a pace that suits you.' },
               ].map((step, i) => (
                 <li key={step.en} className="flex gap-3">
-                  <span lang="hi" className="paint font-body text-4xl font-extrabold leading-none">{['१', '२', '३'][i]}</span>
+                  <span className="paint font-body text-4xl font-extrabold leading-none">{numeral(lang, i)}</span>
                   {t(step)}
                 </li>
               ))}

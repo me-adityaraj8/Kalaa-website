@@ -5,7 +5,7 @@ import PageHeader from '../components/PageHeader';
 import { COURSES, getCourse } from '../data/courses';
 import { CONTACT } from '../data/site';
 import { callLink, whatsappLink } from '../lib/contact';
-import { useLang, type L } from '../lib/i18n';
+import { numeral, useLang, type L } from '../lib/i18n';
 
 const UNSURE = 'unsure';
 
@@ -16,7 +16,7 @@ const NEXT: L[] = [
 ];
 
 export default function Enroll() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const [params] = useSearchParams();
   const [name, setName] = useState(params.get('name') ?? '');
   const [phone, setPhone] = useState('');
@@ -133,7 +133,7 @@ export default function Enroll() {
             <ol className="mt-4 space-y-3">
               {NEXT.map((step, i) => (
                 <li key={step.en} className="flex gap-3 text-lg leading-snug">
-                  <span lang="hi" className="font-body text-3xl font-extrabold leading-none">{['१', '२', '३'][i]}</span>
+                  <span className="font-body text-3xl font-extrabold leading-none">{numeral(lang, i)}</span>
                   {t(step)}
                 </li>
               ))}

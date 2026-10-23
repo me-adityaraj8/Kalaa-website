@@ -19,9 +19,11 @@ export default function CourseCard({ course, index = 0 }: { course: Course; inde
           <TradeIcon slug={course.slug} className="h-7 w-7" />
         </span>
         <div className="min-w-0">
-          <p lang={langAttr(other)} className="truncate text-sm font-bold text-ink/60">
-            {course.name[other]}
-          </p>
+          {lang === 'hi' && (
+            <p lang={langAttr(other)} className="truncate text-sm font-bold text-ink/60">
+              {course.name[other]}
+            </p>
+          )}
           <h3 className="font-display text-2xl font-bold leading-tight">{t(course.name)}</h3>
         </div>
       </div>

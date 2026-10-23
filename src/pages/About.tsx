@@ -7,7 +7,7 @@ import { whatsappLink } from '../lib/contact';
 import { useLang } from '../lib/i18n';
 
 export default function About() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const h2 = 'font-display text-4xl font-bold leading-tight md:text-5xl';
 
   return (
@@ -23,14 +23,14 @@ export default function About() {
       <section className="mx-auto grid max-w-6xl gap-6 px-4 py-14 md:grid-cols-2">
         <Reveal>
           <div className="board screws h-full bg-haldi p-7">
-            <p className="kicker">{t({ hi: 'Mission', en: 'मिशन' })}</p>
+            {lang === 'hi' && <p className="kicker">Mission</p>}
             <h2 className="font-display text-3xl font-bold">{t({ hi: 'हमारा मिशन', en: 'Our mission' })}</h2>
             <p className="mt-3 text-lg leading-relaxed">{t(MISSION)}</p>
           </div>
         </Reveal>
         <Reveal delay={0.08}>
           <div className="board screws h-full bg-white p-7">
-            <p className="kicker">{t({ hi: 'Vision', en: 'विज़न' })}</p>
+            {lang === 'hi' && <p className="kicker">Vision</p>}
             <h2 className="font-display text-3xl font-bold">{t({ hi: 'हमारा सपना', en: 'Our vision' })}</h2>
             <p className="mt-3 text-lg leading-relaxed">{t(VISION)}</p>
           </div>

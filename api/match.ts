@@ -1,4 +1,4 @@
-import { FALLBACK_BETA, MODEL, badRequest, getClient, isLimited, json, logError, offline, readJson, textOf, tooMany } from '../server/ai.js';
+import { MODEL, badRequest, getClient, isLimited, json, logError, offline, parseJsonReply, readJson, tooMany } from '../server/ai.js';
 import { KNOWLEDGE } from '../server/knowledge.js';
 import { COURSE_SLUGS, type Trait } from '../src/data/courses.js';
 import { DEVICES, EDUCATION, GOALS, LIKES, PLACES, type Answers, type MatchResult } from '../src/data/finder.js';
@@ -78,22 +78,20 @@ export async function POST(request: Request): Promise<Response> {
   if (isLimited(request, 'match', 12)) return tooMany();
 
   try {
-    const message = await client.beta.messages.create({
+    const response = await client.models.generateContent({
       model: MODEL,
-      max_tokens: 4000,
-      betas: [FALLBACK_BETA],
-      fallbacks: 'default',
-      output_config: { effort: 'low', format: { type: 'json_schema', schema: SCHEMA } },
-      system: [{ type: 'text', text: SYSTEM, cache_control: { type: 'ephemeral' } }],
-      messages: [
-        {
-          role: 'user',
-          content: `Reply language: ${body.lang === 'hi' ? 'Hindi' : 'English'}\n\n${describe(body.answers)}`,
-        },
-      ],
+      contents: `Reply language: ${body.lang === 'hi' ? 'Hindi' : 'English'}\n\n${describe(body.answers)}`,
+      config: {
+        systemInstruction: SYSTEM,
+        responseMimeType: 'application/json',
+        responseJsonSchema: SCHEMA,
+        maxOutputTokens: 2048,
+      },
     });
-    if (message.stop_reason !== 'end_turn') return json({ error: 'no_match' }, 502);
-    const result = JSON.parse(textOf(message)) as MatchResult;
+    const result = parseJsonReply<MatchResult>(response);
+    if (!result || !COURSE_SLUGS.includes(result.course) || !Array.isArray(result.reasons)) {
+      return json({ error: 'no_match' }, 502);
+    }
     result.reasons = result.reasons.slice(0, 3);
     return json(result);
   } catch (err) {

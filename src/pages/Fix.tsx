@@ -7,7 +7,7 @@ import TradeIcon from '../components/TradeIcon';
 import { getCourse } from '../data/courses';
 import { AiBusy, AiOffline, diagnose, type DeviceKind, type Diagnosis } from '../lib/api';
 import { whatsappLink } from '../lib/contact';
-import { useLang, type L } from '../lib/i18n';
+import { numeral, useLang, type L } from '../lib/i18n';
 import { shrinkPhoto } from '../lib/image';
 import { useDictation } from '../lib/speech';
 
@@ -92,7 +92,7 @@ export default function Fix() {
         <div className="space-y-8">
           <div>
             <p className={stepLabel}>
-              <span className="paint mr-2 font-body font-extrabold" lang="hi">१</span>
+              <span className="paint mr-2 font-body font-extrabold">{numeral(lang, 0)}</span>
               {t({ hi: 'यह क्या है?', en: 'What is it?' })}
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
@@ -106,7 +106,7 @@ export default function Fix() {
 
           <div>
             <p className={stepLabel}>
-              <span className="paint mr-2 font-body font-extrabold" lang="hi">२</span>
+              <span className="paint mr-2 font-body font-extrabold">{numeral(lang, 1)}</span>
               {t({ hi: 'फ़ोटो लो', en: 'Take a photo' })}
             </p>
             <input ref={cameraRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={onFile} />
@@ -132,7 +132,7 @@ export default function Fix() {
 
           <div>
             <label htmlFor="fault-note" className={stepLabel}>
-              <span className="paint mr-2 font-body font-extrabold" lang="hi">३</span>
+              <span className="paint mr-2 font-body font-extrabold">{numeral(lang, 2)}</span>
               {t({ hi: 'क्या दिक्कत है? (अगर पता हो)', en: "What's the problem? (if you know)" })}
             </label>
             <div className="mt-3 flex gap-2">

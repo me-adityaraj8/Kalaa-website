@@ -59,7 +59,7 @@ async function toRequest(req: IncomingMessage): Promise<Request> {
 export default defineConfig(({ mode }) => {
   // Expose server-only secrets (no VITE_ prefix) to the dev API handlers.
   const env = loadEnv(mode, process.cwd(), '');
-  if (env.ANTHROPIC_API_KEY) process.env.ANTHROPIC_API_KEY = env.ANTHROPIC_API_KEY;
+  if (env.GEMINI_API_KEY) process.env.GEMINI_API_KEY = env.GEMINI_API_KEY;
 
   return {
     plugins: [react(), devApi()],

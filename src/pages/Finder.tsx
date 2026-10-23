@@ -143,7 +143,7 @@ export default function Finder() {
       <div className="mx-auto max-w-2xl px-4">
         <div className="mb-6 flex items-center justify-between gap-4">
           <div>
-            <p className="kicker">{t({ hi: 'Course finder · AI', en: 'कोर्स खोजो · AI' })}</p>
+            <p className="kicker">{t({ hi: 'Course finder · AI', en: 'AI course finder' })}</p>
             <h1 className="font-display text-4xl font-bold leading-tight md:text-5xl">
               {t({ hi: 'आपके लिए कौन सा कोर्स?', en: 'Which course is yours?' })}
             </h1>

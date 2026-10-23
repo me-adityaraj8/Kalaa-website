@@ -8,12 +8,12 @@ import ShopBoard from '../components/ShopBoard';
 import { COURSES, getCourse } from '../data/courses';
 import { COURSE_FEE, STEPS } from '../data/site';
 import { whatsappLink } from '../lib/contact';
-import { useLang } from '../lib/i18n';
+import { numeral, useLang } from '../lib/i18n';
 import NotFound from './NotFound';
 
 export default function CoursePage() {
   const { slug } = useParams();
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { open } = useSaathi();
   const course = getCourse(slug);
   if (!course) return <NotFound />;
@@ -88,8 +88,8 @@ export default function CoursePage() {
             <ol className="mt-6 space-y-4">
               {STEPS.map((step, i) => (
                 <li key={step.title.en} className="flex gap-4">
-                  <span lang="hi" className="paint w-10 shrink-0 font-body text-5xl font-extrabold leading-none">
-                    {['१', '२', '३'][i]}
+                  <span className="paint w-10 shrink-0 font-body text-5xl font-extrabold leading-none">
+                    {numeral(lang, i)}
                   </span>
                   <div>
                     <p className="font-display text-2xl font-semibold">{t(step.title)}</p>

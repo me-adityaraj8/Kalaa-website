@@ -22,8 +22,10 @@ export default function ShopBoard({ interactive = true, initialTrade = 'smartpho
   const [trade, setTrade] = useState<CourseSlug>(initialTrade);
   const course = COURSES.find((c) => c.slug === trade)!;
 
-  const shown = name.trim() || (lang === 'hi' ? 'आपका नाम' : 'YOUR NAME');
-  const english = `${name.trim() ? name.trim().toUpperCase() : 'YOUR NAME'} ${course.board.en}`;
+  const hi = lang === 'hi';
+  const shown = name.trim() || (hi ? 'आपका नाम' : 'Your name');
+  const shopName = name.trim() ? name.trim().toUpperCase() : 'YOUR NAME';
+  const topLine = hi ? `${shopName} ${course.board.en}` : `${shopName}'S`;
 
   return (
     <div>
@@ -44,13 +46,13 @@ export default function ShopBoard({ interactive = true, initialTrade = 'smartpho
             >
               <p className="mx-auto flex items-center justify-center gap-2 font-display text-sm font-semibold tracking-wide text-ink/80">
                 <TradeIcon slug={trade} className="h-4 w-4" />
-                <span className="truncate">{english}</span>
+                <span className="truncate">{topLine}</span>
               </p>
-              <p lang="hi" className="paint-ink mt-1 break-words font-display text-[2.6rem] font-bold leading-[1.05] text-sindoor sm:text-5xl">
-                {course.board.hi}
+              <p lang={hi ? 'hi' : 'en'} className="paint-ink mt-1 break-words font-display text-[2.6rem] font-bold leading-[1.05] text-sindoor sm:text-5xl">
+                {hi ? course.board.hi : course.board.en}
               </p>
-              <p lang="hi" className="mt-2 text-[15px] font-bold leading-snug">
-                {course.board.line.hi}
+              <p lang={hi ? 'hi' : 'en'} className="mt-2 text-[15px] font-bold leading-snug">
+                {course.board.line[lang]}
               </p>
             </motion.div>
           </AnimatePresence>

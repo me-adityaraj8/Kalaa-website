@@ -210,7 +210,7 @@ function SaathiPanel({ isOpen, onClose, ask, onAsked }: { isOpen: boolean; onClo
                 <LotusMark className="h-6 w-6 text-neon-glow" />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="tubelight animate-flicker font-display text-2xl font-semibold leading-none">Kalaa साथी</p>
+                <p className="tubelight animate-flicker font-display text-2xl font-semibold leading-none">{t({ hi: 'Kalaa साथी', en: 'Kalaa Saathi' })}</p>
                 <p className="truncate text-sm text-white/70">{t(COPY.subtitle)}</p>
               </div>
               <button
