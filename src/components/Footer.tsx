@@ -1,146 +1,92 @@
-import React, { useState } from 'react';
+import { Instagram, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Zap, Mail, Phone, MapPin, Facebook, Instagram, Linkedin, Youtube } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { COURSES } from '../data/courses';
+import { CONTACT, FUNDING, LEGAL_NAME, MOTTO, TAGLINE } from '../data/site';
+import { callLink, instagramLink, whatsappLink } from '../lib/contact';
+import { useLang } from '../lib/i18n';
+import LotusMark from './LotusMark';
 
-const Footer = () => {
-  const [email, setEmail] = useState('');
-
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle newsletter subscription
-    console.log('Newsletter subscription:', email);
-    setEmail('');
-    alert('Thank you for subscribing to our newsletter!');
-  };
+export default function Footer() {
+  const { t } = useLang();
+  const heading = 'mb-3 font-display text-xl font-semibold text-haldi';
+  const link = 'text-white/80 hover:text-white hover:underline';
 
   return (
-    <footer className="bg-gray-900 text-white">
-      {/* Newsletter Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-orange-500 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h3 className="text-2xl font-bold mb-4">Stay Updated with Kalaa</h3>
-            <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
-              Get the latest updates on new courses, success stories, and job opportunities
-            </p>
-            <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                required
-                className="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-white"
-              />
-              <button
-                type="submit"
-                className="bg-white text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors duration-200"
-              >
-                Subscribe
-              </button>
-            </form>
-          </div>
+    <footer className="border-t-[3px] border-ink bg-ink text-white">
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-[1.3fr_1fr_1fr_1.2fr]">
+        <div>
+          <LotusMark className="h-16 w-16 text-haldi" />
+          <p className="mt-4 font-display text-4xl font-semibold tracking-[0.32em]">KALAA</p>
+          <p className="text-white/70">{t(TAGLINE)}</p>
+          <p className="paint mt-5 font-display text-2xl font-semibold text-haldi">{t(MOTTO)}</p>
+          <p className="mt-4 max-w-xs text-sm text-white/60">
+            {t({
+              hi: `${FUNDING.scheme} योजना के तहत ${FUNDING.amount.hi} की सीड फ़ंडिंग, ${FUNDING.applicants} आवेदकों में से चुने गए।`,
+              en: `${FUNDING.amount.en} seed funding under ${FUNDING.scheme}, picked from ${FUNDING.applicants} applicants.`,
+            })}
+          </p>
+        </div>
+
+        <div>
+          <p className={heading}>{t({ hi: 'कोर्स', en: 'Courses' })}</p>
+          <ul className="space-y-2">
+            {COURSES.map((c) => (
+              <li key={c.slug}>
+                <Link to={`/courses/${c.slug}`} className={link}>
+                  {t(c.name)}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <p className={heading}>Kalaa</p>
+          <ul className="space-y-2">
+            <li><Link to="/find" className={link}>{t({ hi: 'कोर्स चुनो (AI)', en: 'Course finder (AI)' })}</Link></li>
+            <li><Link to="/fix" className={link}>{t({ hi: 'फ़ोटो से जाँच (AI)', en: 'Photo check (AI)' })}</Link></li>
+            <li><Link to="/about" className={link}>{t({ hi: 'हमारे बारे में', en: 'About us' })}</Link></li>
+            <li><Link to="/partner" className={link}>{t({ hi: 'दुकानदारों के लिए', en: 'For shop owners' })}</Link></li>
+            <li><Link to="/enroll" className={link}>{t({ hi: 'दाख़िला', en: 'Enrol' })}</Link></li>
+          </ul>
+        </div>
+
+        <div>
+          <p className={heading}>{t({ hi: 'बात करो', en: 'Get in touch' })}</p>
+          <ul className="space-y-3">
+            <li>
+              <a href={whatsappLink()} target="_blank" rel="noreferrer" className={`${link} inline-flex items-center gap-2`}>
+                <MessageCircle className="h-4 w-4 shrink-0" aria-hidden /> WhatsApp
+              </a>
+            </li>
+            <li>
+              <a href={callLink} className={`${link} inline-flex items-center gap-2`}>
+                <Phone className="h-4 w-4 shrink-0" aria-hidden /> {CONTACT.phoneDisplay}
+              </a>
+            </li>
+            <li>
+              <a href={`mailto:${CONTACT.email}`} className={`${link} inline-flex items-center gap-2 break-all`}>
+                <Mail className="h-4 w-4 shrink-0" aria-hidden /> {CONTACT.email}
+              </a>
+            </li>
+            <li>
+              <a href={instagramLink} target="_blank" rel="noreferrer" className={`${link} inline-flex items-center gap-2`}>
+                <Instagram className="h-4 w-4 shrink-0" aria-hidden /> @{CONTACT.instagram}
+              </a>
+            </li>
+            <li>
+              <a href={CONTACT.mapsUrl} target="_blank" rel="noreferrer" className={`${link} inline-flex items-start gap-2 text-sm`}>
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0" aria-hidden /> {t(CONTACT.address)}
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
-
-      {/* Main Footer */}
-      <div className="py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Company Info */}
-            <div className="space-y-4">
-              <Link to="/" className="flex items-center space-x-2">
-                <div className="bg-gradient-to-r from-blue-600 to-orange-500 p-2 rounded-lg">
-                  <Zap className="h-6 w-6 text-white" />
-                </div>
-                <span className="text-2xl font-bold">Kalaa</span>
-              </Link>
-              <p className="text-gray-400 leading-relaxed">
-                Empowering youth through vocational skills training and connecting them with meaningful employment opportunities across India.
-              </p>
-              <div className="flex space-x-4">
-                <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                  <Facebook className="h-5 w-5" />
-                </a>
-                <a href="#" className="text-gray-400 hover:text-pink-400 transition-colors">
-                  <Instagram className="h-5 w-5" />
-                </a>
-                <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                  <Linkedin className="h-5 w-5" />
-                </a>
-                <a href="#" className="text-gray-400 hover:text-red-400 transition-colors">
-                  <Youtube className="h-5 w-5" />
-                </a>
-              </div>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-2">
-                <li><Link to="/courses" className="text-gray-400 hover:text-white transition-colors">Our Courses</Link></li>
-                <li><Link to="/partners" className="text-gray-400 hover:text-white transition-colors">Partners</Link></li>
-                <li><Link to="/success-stories" className="text-gray-400 hover:text-white transition-colors">Success Stories</Link></li>
-                <li><Link to="/about" className="text-gray-400 hover:text-white transition-colors">About Us</Link></li>
-                <li><Link to="/contact" className="text-gray-400 hover:text-white transition-colors">Contact</Link></li>
-              </ul>
-            </div>
-
-            {/* Courses */}
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Popular Courses</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Mobile Repair</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">AC Servicing</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Solar Panel Installation</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Electrical Work</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Plumbing</a></li>
-              </ul>
-            </div>
-
-            {/* Contact Info */}
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Contact Info</h4>
-              <div className="space-y-3">
-                <div className="flex items-center space-x-3">
-                  <Phone className="h-5 w-5 text-blue-400" />
-                  <span className="text-gray-400">+91 98765 43210</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Mail className="h-5 w-5 text-blue-400" />
-                  <span className="text-gray-400">info@kalaa.in</span>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <MapPin className="h-5 w-5 text-blue-400 mt-1" />
-                  <span className="text-gray-400">
-                    123 Skill Development Center<br />
-                    Mumbai, Maharashtra 400001
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom Bar */}
-      <div className="border-t border-gray-800 py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm">
-              © 2025 Kalaa. All rights reserved.
-            </p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a>
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</a>
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">Cookie Policy</a>
-            </div>
-          </div>
-        </div>
+      <div className="border-t border-white/15">
+        <p className="mx-auto max-w-6xl px-4 py-5 text-sm text-white/50">
+          © {new Date().getFullYear()} {LEGAL_NAME} · {t({ hi: 'भागलपुर, बिहार', en: 'Bhagalpur, Bihar' })}
+        </p>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}

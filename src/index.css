@@ -1,3 +1,162 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-white font-body text-ink antialiased;
+  }
+  ::selection {
+    background: #ffc629;
+    color: #151515;
+  }
+  :focus-visible {
+    outline: 3px solid #e23a22;
+    outline-offset: 2px;
+  }
+  [lang='hi'] {
+    /* Devanagari needs room for its matras */
+    line-height: 1.5;
+  }
+}
+
+@layer components {
+  /* A painted tin signboard: thick outline, hard shadow, four screws. */
+  .board {
+    @apply relative rounded-md border-[3px] border-ink shadow-board;
+  }
+  .screws {
+    --screw: radial-gradient(circle, #151515 0 2.5px, rgba(21, 21, 21, 0.25) 3px, transparent 3.5px);
+    background-image: var(--screw), var(--screw), var(--screw), var(--screw);
+    background-size: 14px 14px;
+    background-repeat: no-repeat;
+    background-position:
+      6px 6px,
+      calc(100% - 6px) 6px,
+      6px calc(100% - 6px),
+      calc(100% - 6px) calc(100% - 6px);
+  }
+
+  /* Hand-painted lettering: the offset shadow sign painters add. */
+  .paint {
+    text-shadow: 3px 3px 0 #e23a22;
+  }
+  .paint-ink {
+    text-shadow: 3px 3px 0 #151515;
+  }
+  .paint-haldi {
+    text-shadow: 3px 3px 0 #ffc629;
+  }
+
+  /* Plastered brick wall that the boards hang on. */
+  .bricks {
+    background-color: #eeeff1;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='48'%3E%3Cpath d='M0 1H96M0 25H96M1 1V25M49 25V48' stroke='%23E1E3E7' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+  }
+
+  .btn {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-md border-[3px] border-ink px-5 py-2.5 font-display text-xl font-semibold leading-tight shadow-board-sm transition-[transform,box-shadow,background-color] duration-100 active:translate-x-[3px] active:translate-y-[3px] active:shadow-none disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-haldi {
+    @apply bg-haldi text-ink hover:bg-haldi-deep;
+  }
+  .btn-white {
+    @apply bg-white text-ink hover:bg-haldi-soft;
+  }
+  .btn-ink {
+    @apply bg-ink text-white hover:bg-black;
+    box-shadow: 3px 3px 0 0 #e23a22;
+  }
+  .btn-wa {
+    @apply bg-patta text-white hover:brightness-110;
+  }
+  .btn-neon {
+    @apply bg-neon-glow text-ink hover:bg-white;
+  }
+
+  /* The other-language line above a heading */
+  .kicker {
+    @apply font-display text-lg font-semibold text-sindoor;
+  }
+
+  /* Red LED scrolling sign, the kind shops hang over the counter */
+  .led {
+    color: #ff4a3d;
+    text-shadow:
+      0 0 4px rgba(255, 74, 61, 0.9),
+      0 0 14px rgba(255, 74, 61, 0.5);
+    background-color: #0d0d0d;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1.2px);
+    background-size: 5px 5px;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-white px-3 py-1 text-sm font-bold;
+  }
+
+  .field {
+    @apply w-full rounded-md border-[3px] border-ink bg-white px-4 py-3 text-lg outline-none transition-shadow placeholder:text-ink/40 focus:shadow-board-sm;
+  }
+  .label {
+    @apply mb-1.5 block font-display text-xl font-semibold;
+  }
+
+  /* A choice button in the course finder and photo check. */
+  .option {
+    @apply rounded-md border-[3px] border-ink bg-white px-4 py-3 text-left text-lg font-bold shadow-board-sm transition-[transform,box-shadow,background-color] duration-100 hover:bg-haldi-soft active:translate-x-[3px] active:translate-y-[3px] active:shadow-none;
+  }
+  .option[aria-pressed='true'] {
+    @apply bg-haldi;
+  }
+
+  /* Torn-edge repair slip for the photo check result. */
+  .slip {
+    @apply relative bg-white;
+    background-image: linear-gradient(transparent 31px, #e8eaed 32px);
+    background-size: 100% 32px;
+  }
+  .slip::before {
+    content: '';
+    @apply absolute inset-x-0 -top-2 h-2;
+    background: radial-gradient(circle at 6px 0, transparent 5px, #fff 5.5px) 0 0 / 12px 8px repeat-x;
+  }
+
+  /* Rubber stamp */
+  .stamp {
+    @apply inline-flex -rotate-6 items-center gap-1 rounded-md border-[3px] border-sindoor px-2 py-0.5 font-display text-lg font-bold uppercase text-sindoor;
+    mask-image: radial-gradient(circle at 30% 40%, #000 60%, rgba(0, 0, 0, 0.75) 100%);
+  }
+
+  /* Tube-light glow for Kalaa Saathi surfaces */
+  .tubelight {
+    color: #8bf0da;
+    text-shadow:
+      0 0 6px rgba(139, 240, 218, 0.7),
+      0 0 22px rgba(47, 165, 142, 0.6);
+  }
+}
+
+@layer utilities {
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-sway,
+  .animate-flicker,
+  .animate-blink,
+  .animate-marquee {
+    animation: none !important;
+  }
+}

@@ -1,25 +1,26 @@
 {
-  "name": "vite-react-typescript-starter",
+  "name": "kalaa-website",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.api.json && tsc -p tsconfig.node.json",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "start": "vite"
+    "preview": "vite preview"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.1.0",
     "framer-motion": "^12.23.11",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-intersection-observer": "^9.16.0",
     "react-router-dom": "^7.7.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
+    "@types/node": "^22.20.5",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
