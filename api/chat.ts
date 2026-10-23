@@ -1,5 +1,5 @@
 import { MODEL, badRequest, getClient, isLimited, logError, offline, readJson, tooMany, wasBlocked } from '../server/ai.js';
-import { KNOWLEDGE, replyLanguage } from '../server/knowledge.js';
+import { KNOWLEDGE } from '../server/knowledge.js';
 import { CONTACT } from '../src/data/site.js';
 import type { Lang } from '../src/data/types.js';
 
@@ -13,6 +13,7 @@ How to talk:
 - Reply in the language and script the person used: Hindi in Devanagari gets Hindi in Devanagari, Hinglish in Roman letters gets Hinglish in Roman letters, English gets simple English.
 - Keep replies short, 2 to 4 sentences and under 70 words, because they may be read aloud. Plain sentences only: no markdown, headings, lists or emoji.
 - Use everyday words. Be warm and straightforward, like a helpful elder brother or sister from the same town.
+- Write phone numbers in digits, exactly as ${CONTACT.phoneDisplay}. Never spell numbers out in words.
 
 What you know about Kalaa (the only facts about Kalaa you may state):
 <knowledge>
@@ -35,6 +36,13 @@ const FAILED: Record<Lang, string> = {
   hi: `अभी जवाब नहीं आ पाया। थोड़ी देर में फिर पूछो, या WhatsApp करो: ${CONTACT.phoneDisplay}`,
   en: `I couldn't finish that answer. Try again in a moment, or WhatsApp us: ${CONTACT.phoneDisplay}`,
 };
+
+/** Gemini Flash-Lite drifts into Hindi easily, so pin the reply language per message. */
+function languageRule(latest: string): string {
+  return /[\u0900-\u097F]/.test(latest)
+    ? 'Language for this reply: their latest message is in Hindi (Devanagari), so reply in simple Hindi written in Devanagari.'
+    : 'Language for this reply: their latest message is written in Latin letters, so reply in the same language they used: English if they wrote English, Hinglish in Roman letters if they wrote Hindi in Roman letters. Do not use Devanagari.';
+}
 
 type ChatBody = { lang: Lang; messages: { role: 'user' | 'assistant'; content: string }[] };
 
@@ -75,7 +83,7 @@ export async function POST(request: Request): Promise<Response> {
           model: MODEL,
           contents: messages.map((m) => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })),
           config: {
-            systemInstruction: `${SYSTEM}\n\n${replyLanguage(lang)}`,
+            systemInstruction: `${SYSTEM}\n\n${languageRule(messages[messages.length - 1].content)}`,
             maxOutputTokens: 2048,
             abortSignal: abort.signal,
           },

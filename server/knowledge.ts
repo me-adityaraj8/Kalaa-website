@@ -1,6 +1,5 @@
 import { COURSES } from '../src/data/courses.js';
 import { CONTACT, COURSE_FEE, FUNDING, MISSION, MOTTO, STEPS, TAGLINE, TEAM } from '../src/data/site.js';
-import type { Lang } from '../src/data/types.js';
 
 const courseLines = COURSES.map(
   (c) =>
@@ -36,9 +35,3 @@ On this website: a course finder at /find, a photo fault-finder at /fix, course 
 
 Not known, so never guess: batch start dates, course length, class timings, stipend amounts, salaries, placement numbers, names of partner shops.
 `.trim();
-
-export function replyLanguage(lang: Lang): string {
-  return lang === 'hi'
-    ? 'The website is currently shown in Hindi. If unsure which language to use, use simple Hindi in Devanagari.'
-    : 'The website is currently shown in English. If unsure which language to use, use simple English.';
-}
