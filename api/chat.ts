@@ -37,11 +37,22 @@ const FAILED: Record<Lang, string> = {
   en: `I couldn't finish that answer. Try again in a moment, or WhatsApp us: ${CONTACT.phoneDisplay}`,
 };
 
-/** Gemini Flash-Lite drifts into Hindi easily, so pin the reply language per message. */
+// Common words in Hindi typed with English letters ("Hinglish").
+const HINGLISH = new Set(
+  ('hai hain kya kaise kahan kitna kitne kitni mujhe mera meri bhai nahi nahin karna karo sikhna seekhna ' +
+    'sikhate chahiye aap tum kaun kab haan theek accha acha batao bataiye wala wali naukri dukaan ' +
+    'kaam paise paisa sakta sakte raha rahe hoga milega milegi lagega ka ki ke ko mein').split(' '),
+);
+
+/** Flash-Lite drifts between languages, so decide the reply language here. */
 function languageRule(latest: string): string {
-  return /[\u0900-\u097F]/.test(latest)
-    ? 'Language for this reply: their latest message is in Hindi (Devanagari), so reply in simple Hindi written in Devanagari.'
-    : 'Language for this reply: their latest message is written in Latin letters, so reply in the same language they used: English if they wrote English, Hinglish in Roman letters if they wrote Hindi in Roman letters. Do not use Devanagari.';
+  if (/[\u0900-\u097F]/.test(latest)) {
+    return 'Language for this reply: simple Hindi written in Devanagari.';
+  }
+  const words = latest.toLowerCase().match(/[a-z]+/g) ?? [];
+  return words.some((w) => HINGLISH.has(w))
+    ? 'Language for this reply: Hinglish (Hindi in Roman letters), matching how they wrote. Do not use Devanagari.'
+    : 'Language for this reply: simple English. Do not use Hindi or Hinglish.';
 }
 
 type ChatBody = { lang: Lang; messages: { role: 'user' | 'assistant'; content: string }[] };
